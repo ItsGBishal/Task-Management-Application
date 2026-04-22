@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zenith Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="auth-view" id="authView">
+      <div class="auth-brand">
+        <p class="eyebrow">Zenith Workspace</p>
+        <h1>Plan the work. Finish with calm.</h1>
+        <p>Secure tasks, status tracking, due dates, priority, search, and filters in one focused dashboard.</p>
+      </div>
+
+      <div class="auth-panel">
+        <div class="auth-tabs" role="tablist" aria-label="Authentication">
+          <button class="tab-button active" id="loginTab" type="button">Login</button>
+          <button class="tab-button" id="registerTab" type="button">Register</button>
+        </div>
+
+        <form class="auth-form active" id="loginForm">
+          <h2>Welcome back</h2>
+          <label>Email
+            <input type="email" name="email" placeholder="you@example.com" required>
+          </label>
+          <label>Password
+            <input type="password" name="password" placeholder="Your password" required>
+          </label>
+          <button class="primary-button" type="submit">Login</button>
+        </form>
+
+        <form class="auth-form" id="registerForm">
+          <h2>Create account</h2>
+          <label>Name
+            <input type="text" name="name" placeholder="Your name" required>
+          </label>
+          <label>Email
+            <input type="email" name="email" placeholder="you@example.com" required>
+          </label>
+          <label>Password
+            <input type="password" name="password" placeholder="At least 6 characters" minlength="6" required>
+          </label>
+          <button class="primary-button" type="submit">Register</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="dashboard-view hidden" id="dashboardView">
+      <aside class="sidebar">
+        <div>
+          <p class="eyebrow">Zenith</p>
+          <h2>Task Manager</h2>
+        </div>
+        <nav>
+          <a class="active" href="/dashboard">Dashboard</a>
+          <a href="/tasks">Tasks</a>
+          <a href="/completed">Completed</a>
+        </nav>
+        <button class="ghost-button" id="logoutButton" type="button">Logout</button>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Command Center</p>
+            <h1 id="dashboardTitle">Your tasks</h1>
+          </div>
+          <div class="topbar-actions">
+            <input id="searchInput" type="search" placeholder="Search tasks">
+            <button class="primary-button" id="openTaskModal" type="button">New Task</button>
+          </div>
+        </header>
+
+        <section class="stats-grid" aria-label="Task stats">
+          <article><span id="totalCount">0</span>Total</article>
+          <article><span id="pendingCount">0</span>Pending</article>
+          <article><span id="progressCount">0</span>In Progress</article>
+          <article><span id="completedCount">0</span>Completed</article>
+        </section>
+
+        <section class="filters" aria-label="Task filters">
+          <button class="filter-button active" data-status="all" type="button">All</button>
+          <button class="filter-button" data-status="pending" type="button">Pending</button>
+          <button class="filter-button" data-status="in-progress" type="button">In Progress</button>
+          <button class="filter-button" data-status="completed" type="button">Completed</button>
+        </section>
+
+        <section class="task-grid" id="taskGrid" aria-live="polite"></section>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog class="task-dialog" id="taskDialog">
+    <form id="taskForm" method="dialog">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">Task Details</p>
+          <h2 id="taskFormTitle">New Task</h2>
+        </div>
+        <button class="icon-button" id="closeTaskModal" type="button" aria-label="Close modal">x</button>
+      </div>
+
+      <input type="hidden" name="id">
+
+      <label>Title
+        <input type="text" name="title" placeholder="Design dashboard layout" maxlength="120" required>
+      </label>
+
+      <label>Description
+        <textarea name="description" rows="4" placeholder="Add useful context for this task"></textarea>
+      </label>
+
+      <div class="form-grid">
+        <div class="field-group">
+          <p class="label-text">Status</p>
+          <div class="segmented-control" id="statusPicker">
+            <label class="segmented-item">
+              <input type="radio" name="status" value="pending" checked>
+              <span>Pending</span>
+            </label>
+            <label class="segmented-item">
+              <input type="radio" name="status" value="in-progress">
+              <span>In Progress</span>
+            </label>
+            <label class="segmented-item">
+              <input type="radio" name="status" value="completed">
+              <span>Completed</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <p class="label-text">Priority</p>
+          <div class="segmented-control" id="priorityPicker">
+            <label class="segmented-item">
+              <input type="radio" name="priority" value="low">
+              <span>Low</span>
+            </label>
+            <label class="segmented-item">
+              <input type="radio" name="priority" value="medium" checked>
+              <span>Medium</span>
+            </label>
+            <label class="segmented-item">
+              <input type="radio" name="priority" value="high">
+              <span>High</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <label>Due date
+        <input type="date" name="dueDate">
+      </label>
+
+      <button class="primary-button" type="submit">Save Task</button>
+    </form>
+  </dialog>
+
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
