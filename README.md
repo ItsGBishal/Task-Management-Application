@@ -1,55 +1,82 @@
 # Zenith Task Manager
 
-A full-stack task management web application with JWT authentication, protected task CRUD, MongoDB persistence, search, filtering, priorities, due dates, and Socket.io task refresh events.
+A full-stack task management web application built with vanilla HTML/CSS/JavaScript on the frontend and Node.js/Express on the backend. Features JWT authentication, real-time task updates via Socket.io, task CRUD operations, search, filtering by status, priority levels, due dates, and clean client-side routing.
 
-## Tech Stack
+---
 
-- Frontend: HTML, CSS, JavaScript
-- Backend: Node.js, Express.js
-- Database: MongoDB with Mongoose
-- Auth: JWT and bcrypt password hashing
-- Realtime: Socket.io task update events
+## 🚀 Features
 
-## Project Structure
+- **JWT Authentication** — Secure register & login with bcrypt password hashing
+- **Task Management** — Create, edit, complete, reopen, and delete tasks
+- **Priority Levels** — Low, Medium, High with color-coded indicators
+- **Status Tracking** — Pending, In Progress, Completed
+- **Search & Filter** — Real-time search and filter by status
+- **Real-time Updates** — Socket.io emits task events across sessions
+- **Clean URL Routing** — Client-side SPA routing (`/dashboard`, `/tasks`, `/completed`)
+- **Stats Dashboard** — Live counts for Total, Pending, In Progress, and Completed tasks
+- **Dark UI** — Glassmorphism dark theme with smooth animations
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | HTML5, CSS3, Vanilla JavaScript |
+| Backend | Node.js, Express.js |
+| Database | MongoDB with Mongoose |
+| Auth | JWT (`jsonwebtoken`) + `bcryptjs` |
+| Realtime | Socket.io |
+| Dev Server | Nodemon |
+
+---
+
+## 📁 Project Structure
 
 ```text
-backend/
-  config/
-  controllers/
-  middleware/
-  models/
-  routes/
-  server.js
-frontend/
-  index.html
-  styles.css
-  script.js
+codex_2ndProject/
+├── backend/
+│   ├── config/
+│   │   └── db.js                  # MongoDB connection
+│   ├── controllers/
+│   │   ├── authController.js      # Register & Login logic
+│   │   └── taskController.js      # Task CRUD logic
+│   ├── middleware/
+│   │   ├── authMiddleware.js      # JWT verification
+│   │   └── errorHandler.js        # Global error handler
+│   ├── models/
+│   │   ├── User.js                # User schema
+│   │   └── Task.js                # Task schema
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   └── taskRoutes.js
+│   ├── server.js
+│   └── package.json
+└── frontend/
+    ├── index.html
+    ├── styles.css
+    └── script.js
 ```
 
-## Run Locally
+---
 
-1. Install and start MongoDB locally, or create a MongoDB Atlas database.
-2. Configure the backend:
+## ⚙️ Run Locally
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/ItsGBishal/Task-Management-Application.git
+cd Task-Management-Application
+```
+
+### 2. Set up the Backend
 
 ```bash
 cd backend
-copy .env.example .env
 npm install
-npm run dev
 ```
 
-3. Open the frontend:
-
-```bash
-cd ../frontend
-python -m http.server 5500
-```
-
-4. Visit `http://localhost:5500`.
-
-If you use MongoDB Atlas, replace `MONGO_URI` in `backend/.env` with your Atlas connection string. Keep `CLIENT_URL=http://localhost:5500` for local development.
-
-## Environment Variables
+Create a `.env` file inside the `backend/` folder:
 
 ```env
 PORT=5000
@@ -59,86 +86,115 @@ JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5500
 ```
 
-## API Testing With Postman
+> 💡 If using **MongoDB Atlas**, replace `MONGO_URI` with your Atlas connection string.
 
-### Register
+Start the backend:
 
-POST `http://localhost:5000/api/auth/register`
-
-```json
-{
-  "name": "Alex Chen",
-  "email": "alex@example.com",
-  "password": "password123"
-}
+```bash
+npm run dev
 ```
 
-Copy the returned `token`.
+The API will be running at `http://localhost:5000`.
 
-### Login
+### 3. Serve the Frontend
 
-POST `http://localhost:5000/api/auth/login`
+Open a new terminal in the `frontend/` folder:
 
-```json
-{
-  "email": "alex@example.com",
-  "password": "password123"
-}
+```bash
+cd frontend
+npx serve -s -l 5500
 ```
 
-### Auth Header For Task Routes
+> ⚠️ The **`-s`** flag is required. It enables Single Page Application (SPA) mode so that clean URLs like `/dashboard` and `/completed` work correctly when you refresh the page.
 
-Set this header for all task requests:
+### 4. Open in Browser
 
-```text
+Visit: **`http://localhost:5500`**
+
+---
+
+## 🌐 Frontend Routes
+
+| URL | View |
+|---|---|
+| `/dashboard` | All tasks |
+| `/tasks` | Pending tasks |
+| `/completed` | Completed tasks |
+
+---
+
+## 🔌 API Reference
+
+Base URL: `http://localhost:5000/api`
+
+All task routes require the following header:
+
+```
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
-### Create Task
+### Auth
 
-POST `http://localhost:5000/api/tasks`
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/auth/register` | Register a new user |
+| POST | `/auth/login` | Login and get a JWT token |
 
+**Register / Login Body:**
 ```json
 {
-  "title": "Prepare sprint plan",
-  "description": "Break the release into shippable tasks.",
+  "name": "Your Name",
+  "email": "you@example.com",
+  "password": "yourpassword"
+}
+```
+
+### Tasks
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/tasks` | Get all tasks (supports `?status=` and `?search=`) |
+| POST | `/tasks` | Create a new task |
+| PUT | `/tasks/:id` | Update a task |
+| DELETE | `/tasks/:id` | Delete a task |
+
+**Create / Update Task Body:**
+```json
+{
+  "title": "Design the dashboard",
+  "description": "Create a responsive layout.",
   "status": "pending",
   "priority": "high",
-  "dueDate": "2026-04-25"
+  "dueDate": "2026-05-01"
 }
 ```
 
-### Get Tasks
+**Status values:** `pending` | `in-progress` | `completed`
 
-GET `http://localhost:5000/api/tasks`
+**Priority values:** `low` | `medium` | `high`
 
-Optional query params:
+---
 
-```text
-?status=in-progress
-?search=sprint
+## ☁️ Deployment
+
+| Part | Platform |
+|---|---|
+| Backend | [Render](https://render.com) or [Railway](https://railway.app) |
+| Frontend | [Netlify](https://netlify.com) or [Vercel](https://vercel.com) |
+| Database | [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) |
+
+After deploying, update these values:
+
+- Set `CLIENT_URL` in the backend environment to your deployed frontend URL.
+- Update `API_BASE_URL` and `SOCKET_URL` in `frontend/script.js` to your deployed backend URL.
+- On Netlify, create a `_redirects` file in the `frontend/` folder to enable SPA routing:
+
+```
+/*  /index.html  200
 ```
 
-### Update Task
+---
 
-PUT `http://localhost:5000/api/tasks/TASK_ID`
+## 📄 License
 
-```json
-{
-  "title": "Prepare final sprint plan",
-  "status": "completed",
-  "priority": "medium"
-}
-```
-
-### Delete Task
-
-DELETE `http://localhost:5000/api/tasks/TASK_ID`
-
-## Deployment Notes
-
-- Backend: deploy `backend/` to Render or Railway.
-- Frontend: deploy `frontend/` to Netlify or Vercel as a static site.
-- Database: use MongoDB Atlas and set `MONGO_URI` in the backend host.
-- Set `CLIENT_URL` on the backend to the deployed frontend URL.
-- Update `API_BASE_URL` and `SOCKET_URL` in `frontend/script.js` to the deployed backend URL.
+This project is open source and available under the [MIT License](LICENSE).
