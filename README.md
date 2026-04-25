@@ -19,12 +19,6 @@ A full-stack, responsive task management application built to help users plan th
 *   **Real-time Communication:** Socket.io
 *   **Authentication:** JWT, bcryptjs
 
-## Prerequisites
-
-Make sure you have the following installed on your machine:
-*   [Node.js](https://nodejs.org/) (v14 or higher)
-*   [MongoDB](https://www.mongodb.com/) (running locally or a MongoDB Atlas URI)
-
 ## Getting Started
 
 ### 1. Clone the repository
@@ -37,14 +31,6 @@ cd Task-Management-Application
 ```bash
 cd backend
 npm install
-```
-Create a `.env` file in the `backend` directory and add the following:
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_super_secret_jwt_key
-JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:5500
 ```
 Start the backend server:
 ```bash
