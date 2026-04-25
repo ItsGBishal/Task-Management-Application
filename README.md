@@ -1,4 +1,4 @@
-# Zenith Task Manager
+# Task Management Application
 
 A full-stack, responsive task management application built to help users plan their work and finish with calm.
 
